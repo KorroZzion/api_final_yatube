@@ -1,74 +1,121 @@
-# Проект API для Yatube
-Проект в виде социальной сети с публикациями, комментариями, группами и подписками.
+# API для Yatube
 
-# Как запустить проект:
+## Описание
 
-Клонировать репозиторий и перейти в него в командной строке:
+Яндекс Практикум. Спринт 9. Итоговый проект. API для Yatube.
 
-```
-git clone https://github.com/CatGamer7/api_final_yatube.git
-```
+## Функционал
 
-```
-cd api_final_yatube
-```
+- Подписка и отписка от авторизованного пользователя;
+- Авторизованный пользователь просматривает посты, создавёт новые, удаляет и изменяет их;
+- Просмотр сообществ;
+- Комментирование, просмотр, удаление и обновление комментариев;
+- Фльтрация по полям.
 
-Cоздать и активировать виртуальное окружение:
+## Установка
 
-```
-python3 -m venv .venv
-```
+1. Клонировать репозиторий:
 
-```
-source .venv/bin/activate
-```
+   ```python
+   git clone https://github.com/KorroZzion/api_final_yatube.git
+   ```
 
-Установить зависимости из файла requirements.txt:
+2. Перейти в папку с проектом:
 
-```
-python -m pip install --upgrade pip
-```
+   ```python
+   cd api_final_yatube/
+   ```
 
-```
-pip install -r requirements.txt
-```
+3. Установить виртуальное окружение для проекта:
 
-Выполнить миграции:
+   ```python
+   python -m venv venv
+   ```
 
-```
-python manage.py migrate
-```
+4. Активировать виртуальное окружение для проекта:
 
-Запустить проект:
+   ```python
+   # для OS Lunix и MacOS
+   source venv/bin/activate
 
-```
-python manage.py runserver
-```
+   # для OS Windows
+   source venv/Scripts/activate
+   ```
 
-# Примеры некоторых запросов:
-P.S. примеры всех запросов можно посмотреть в документации по адресу /redoc/
+5. Установить зависимости:
 
-- Публикация поста
-```
-POST /api/v1/posts/
-{
-    "text": "string"
-}
-```
+   ```python
+   python3 -m pip install --upgrade pip
+   pip install -r requirements.txt
+   ```
 
-- Получение постов постранично
-```
-GET /api/v1/posts/?limit=10&offset=10
-```
+6. Выполнить миграции на уровне проекта:
 
-- Получение всех комменатриев
+   ```python
+   cd yatube
+   python3 manage.py makemigrations
+   python3 manage.py migrate
+   ```
 
-```
-GET /api/v1/posts/{post_id}/comments/
-```
+7. Запустить проект:
 
-- Удаление комментария
+   `python manage.py runserver`
 
-```
-DEL /api/v1/posts/{post_id}/comments/{comment_id}/
-```
+## Примеры запросов
+
+Получение токена
+
+Отправить POST-запрос на адрес `api/v1/jwt/create/` и передать 2 поля в `data`:
+
+1. `username` - имя пользователя.
+2. `password` - пароль пользователя.
+
+Создание поста
+
+Отправить POST-запрос на адрес `api/v1/posts/` и передать обязательное поле `text`, в заголовке указать `Authorization`:`Bearer <токен>`.
+
+1. Пример запроса:
+
+   ```json
+   {
+     "text": "Мой первый пост."
+   }
+   ```
+
+2. Пример ответа:
+
+   ```json
+   {
+     "id": 2,
+     "author": "Ivan",
+     "text": "Мой первый пост.",
+     "pub_date": "2025-03-10T12:00:22.021094Z",
+     "image": null,
+     "group": null
+   }
+   ```
+
+Комментирование поста пользователя
+
+Отправить POST-запрос на адрес `api/v1/posts/{post_id}/comments/` и передать обязательные поля `post` и `text`, в заголовке указать `Authorization`:`Bearer <токен>`.
+
+1. Пример запроса:
+
+   ```json
+   {
+     "post": 1,
+     "text": "Тест"
+   }
+   ```
+
+2. Пример ответа:
+
+   ```json
+   {
+     "id": 1,
+     "author": "Ivan",
+     "text": "Тест",
+     "created": "2025-03-10T12:06:13.146875Z",
+     "post": 1
+   }
+   ```
